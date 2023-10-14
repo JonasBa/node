@@ -15,15 +15,14 @@ function main({ n, type }) {
   switch (type) {
     case 'existing': {
       for (let i = 0; i < n; i++) {
-        const p = tmpdir.resolve(`rmdirsync-bench-dir-${i}`);
-        fs.mkdirSync(p, { recursive: true });
+        fs.mkdirSync(tmpdir.resolve(`rmsync-bench-dir-${i}`), {
+          recursive: true,
+        });
       }
 
       bench.start();
       for (let i = 0; i < n; i++) {
-        const p = tmpdir.resolve(`rmdirsync-bench-dir-${i}`);
-
-        fs.rmdirSync(p, {
+        fs.rmSync(tmpdir.resolve(`rmsync-bench-dir-${i}`), {
           recursive: true,
           maxRetries: 3,
         });
@@ -35,7 +34,7 @@ function main({ n, type }) {
       bench.start();
       for (let i = 0; i < n; i++) {
         try {
-          fs.rmdirSync(tmpdir.resolve(`.non-existent-folder-${i}`), {
+          fs.rmSync(tmpdir.resolve(`.non-existent-folder-${i}`), {
             recursive: true,
             maxRetries: 3,
           });

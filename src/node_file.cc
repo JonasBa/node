@@ -1627,10 +1627,10 @@ static void RimrafUnlinkSync(const FunctionCallbackInfo<Value>& args) {
         std::find(retryable_errors.begin(), retryable_errors.end(), err) != retryable_errors.end()) {
       sleep(i * retry_delay * 1e-3);
     } else if (err == UV_ENOENT) {
-      break;
+      return;
     } else if (i == tries) {
       env->ThrowUVException(err, nullptr, "unlink");
-      break;
+      return;
     }
   }
 }
