@@ -1622,7 +1622,6 @@ static void RimrafUnlinkSync(const FunctionCallbackInfo<Value>& args) {
     if (is_uv_error(err)) {
       if (i < tries && retry_delay > 0 &&
           std::find(retryable_errors.begin(), retryable_errors.end(), err) != retryable_errors.end()) {
-            printf("unlink retrying %d\n", i);
         sleep(i * retry_delay * 1e-3);
       } else if (err == UV_ENOENT) {
         break;
