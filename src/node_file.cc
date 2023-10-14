@@ -1619,16 +1619,18 @@ static void RimrafUnlinkSync(const FunctionCallbackInfo<Value>& args) {
     auto err = uv_fs_unlink(nullptr, &req, *path, nullptr);
     FS_SYNC_TRACE_END(unlink);
 
-    if (is_uv_error(err)) {
-      if (i < tries && retry_delay > 0 &&
-          std::find(retryable_errors.begin(), retryable_errors.end(), err) != retryable_errors.end()) {
-        sleep(i * retry_delay * 1e-3);
-      } else if (err == UV_ENOENT) {
-        break;
-      } else if (i == tries) {
-        env->ThrowUVException(err, nullptr, "unlink");
-        break;
-      }
+    if(!is_uv_error(err)) {
+      return;
+    }
+
+    if (i < tries && retry_delay > 0 &&
+        std::find(retryable_errors.begin(), retryable_errors.end(), err) != retryable_errors.end()) {
+      sleep(i * retry_delay * 1e-3);
+    } else if (err == UV_ENOENT) {
+      break;
+    } else if (i == tries) {
+      env->ThrowUVException(err, nullptr, "unlink");
+      break;
     }
   }
 }

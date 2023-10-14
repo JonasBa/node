@@ -1,5 +1,6 @@
 'use strict';
 
+const assert = require('assert');
 const common = require('../common');
 const fs = require('fs');
 const tmpdir = require('../../test/common/tmpdir');
@@ -36,9 +37,10 @@ function main({ n, type }) {
         try {
           fs.rmdirSync(tmpdir.resolve(`.non-existent-folder-${i}`), {
             recursive: true,
+            maxRetries: 3,
           });
-        } catch {
-          // do nothing
+        } catch (err) {
+          assert.match(err.message, /ENOENT/);
         }
       }
       bench.end(n);
