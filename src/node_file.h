@@ -3,7 +3,7 @@
 
 #if defined(NODE_WANT_INTERNALS) && NODE_WANT_INTERNALS
 
-#include <optional>
+//#include <optional>
 #include "aliased_buffer.h"
 #include "node_messaging.h"
 #include "node_snapshotable.h"
