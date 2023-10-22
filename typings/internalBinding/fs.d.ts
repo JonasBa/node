@@ -195,6 +195,8 @@ declare namespace InternalFSBinding {
   function rmdir(path: string, req: undefined, ctx: FSSyncContext): void;
   function rmdir(path: string, usePromises: typeof kUsePromises): Promise<void>;
 
+  function rimrafUnlinkSync(path: StringOrBuffer, maxRetries: number, retryDelay: number): void;
+
   function stat(path: StringOrBuffer, useBigint: boolean, req: FSReqCallback<Float64Array | BigUint64Array>): void;
   function stat(path: StringOrBuffer, useBigint: true, req: FSReqCallback<BigUint64Array>): void;
   function stat(path: StringOrBuffer, useBigint: false, req: FSReqCallback<Float64Array>): void;
@@ -275,6 +277,7 @@ export interface FsBinding {
   realpath: typeof InternalFSBinding.realpath;
   rename: typeof InternalFSBinding.rename;
   rmdir: typeof InternalFSBinding.rmdir;
+  rimrafUnlinkSync: typeof InternalFSBinding.rimrafUnlinkSync;
   stat: typeof InternalFSBinding.stat;
   symlink: typeof InternalFSBinding.symlink;
   unlink: typeof InternalFSBinding.unlink;
