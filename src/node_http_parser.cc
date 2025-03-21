@@ -23,7 +23,6 @@
 #include "node_buffer.h"
 #include "util.h"
 
-#include "async_wrap-inl.h"
 #include "env-inl.h"
 #include "llhttp.h"
 #include "memory_tracker-inl.h"
@@ -250,13 +249,13 @@ class ConnectionsList : public BaseObject {
     std::set<Parser*, ParserComparator> active_connections_;
 };
 
-class Parser : public AsyncWrap, public StreamListener {
+class Parser : public BaseObject, public StreamListener {
   friend class ConnectionsList;
   friend struct ParserComparator;
 
  public:
   Parser(BindingData* binding_data, Local<Object> wrap)
-      : AsyncWrap(binding_data->env(), wrap),
+      : BaseObject(binding_data->env(), wrap),
         current_buffer_len_(0),
         current_buffer_data_(nullptr),
         binding_data_(binding_data) {
@@ -668,13 +667,6 @@ class Parser : public AsyncWrap, public StreamListener {
     // Should always be called from the same context.
     CHECK_EQ(env, parser->env());
 
-    AsyncWrap::ProviderType provider =
-        (type == HTTP_REQUEST ?
-            AsyncWrap::PROVIDER_HTTPINCOMINGMESSAGE
-            : AsyncWrap::PROVIDER_HTTPCLIENTREQUEST);
-
-    parser->set_provider_type(provider);
-    parser->AsyncReset(args[1].As<Object>());
     parser->Init(type, max_http_header_size, lenient_flags);
 
     if (connectionsList != nullptr) {
@@ -1299,7 +1291,6 @@ void CreatePerIsolateProperties(IsolateData* isolate_data,
   t->Set(FIXED_ONE_BYTE_STRING(isolate, "kLenientAll"),
          Integer::NewFromUnsigned(isolate, kLenientAll));
 
-  t->Inherit(AsyncWrap::GetConstructorTemplate(isolate_data));
   SetProtoMethod(isolate, t, "close", Parser::Close);
   SetProtoMethod(isolate, t, "free", Parser::Free);
   SetProtoMethod(isolate, t, "remove", Parser::Remove);
