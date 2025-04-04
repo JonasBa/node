@@ -69,9 +69,12 @@ class JSBindingsConnection : public BaseObject {
       HandleScope handle_scope(isolate);
       Context::Scope context_scope(env_->context());
       Local<Value> argument;
-      if (!String::NewFromTwoByte(isolate, message.characters16(),
+      if (!String::NewFromTwoByte(isolate,
+                                  message.characters16(),
                                   NewStringType::kNormal,
-                                  message.length()).ToLocal(&argument)) return;
+                                  message.length())
+               .ToLocal(&argument))
+        return;
       connection_->OnMessage(argument);
     }
 
